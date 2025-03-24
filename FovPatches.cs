@@ -8,7 +8,7 @@ using EFT.InventoryLogic;
 using EFT.UI;
 using EFT.UI.Settings;
 using HarmonyLib;
-using RealismMod;
+//using RealismMod;
 using SPT.Reflection.Patching;
 using System;
 using System.Collections.Generic;
@@ -18,9 +18,9 @@ using System.Reflection;
 using UnityEngine;
 using static EFT.Player;
 using static GClass1040;
-using FCSubClass = EFT.Player.FirearmController.GClass1748;
-using InputClass1 = Class1581;
-using InputClass2 = Class1579;
+//using FCSubClass = EFT.Player.FirearmController.GClass1748;
+//using InputClass1 = Class1581;
+//using InputClass2 = Class1579;
 using SightComptInterface = GInterface365;
 
 namespace FOVFix
@@ -29,7 +29,7 @@ namespace FOVFix
     {
         protected override MethodBase GetTargetMethod()
         {
-            return typeof(GClass3105).GetMethod("CloneItem", BindingFlags.Static | BindingFlags.Public)?.MakeGenericMethod(typeof(Item));
+            return typeof(GClass3176).GetMethod("CloneItem", BindingFlags.Static | BindingFlags.Public)?.MakeGenericMethod(typeof(Item));
         }
 
         [PatchPostfix]
@@ -102,6 +102,7 @@ namespace FOVFix
         }
     }
 
+    /*
     //allows bigger base FOV range in settings
     public class FovRangePatch : ModulePatch
     {
@@ -111,7 +112,7 @@ namespace FOVFix
         }
 
         [PatchPostfix]
-        private static void PostFix(NumberSlider ____fov, GClass1040 ___gclass1040_0)
+        private static void PostFix(NumberSlider ____fov, GClass1053 ___gclass1040_0)
         {
             if (Plugin.MinBaseFOV.Value > Plugin.MaxBaseFOV.Value)
             {
@@ -127,7 +128,7 @@ namespace FOVFix
     {
         protected override MethodBase GetTargetMethod()
         {
-            return typeof(Class1690).GetMethod("method_0");
+            return typeof(GClass1690).GetMethod("method_0");
         }
 
         [PatchPostfix]
@@ -141,7 +142,7 @@ namespace FOVFix
             __result = Mathf.Clamp(x, Plugin.MinBaseFOV.Value, Plugin.MaxBaseFOV.Value);
         }
     }
-
+    */
     //Required to prevent bugs and issues with my modifications to FOV when using freelook
     public class FreeLookPatch : ModulePatch
     {
@@ -271,6 +272,7 @@ namespace FOVFix
             return typeof(EFT.Animations.ProceduralWeaponAnimation).GetMethod("LerpCamera", BindingFlags.Instance | BindingFlags.Public);
         }
 
+        /*
         private static void DoStanceSmoothing()
         {
             if (Plugin.RealCompat.StanceBlenderTarget <= 0f && Plugin.RealCompat.StanceBlenderValue > 0f)
@@ -292,6 +294,7 @@ namespace FOVFix
                 _stanceTimer = 0f;
             }
         }
+        */
 
         [PatchPrefix]
         private static bool Prefix(EFT.Animations.ProceduralWeaponAnimation __instance, float dt, float ____overweightAimingMultiplier, float ____aimingSpeed, float ____aimSwayStrength, Player.ValueBlender ____aimSwayBlender, Vector3 ____aimSwayDirection, Vector3 ____headRotationVec, Vector3 ____vCameraTarget, Player.ValueBlenderDelay ____tacticalReload, Quaternion ____cameraIdenity, Quaternion ____rotationOffset)
@@ -301,16 +304,16 @@ namespace FOVFix
             Player player = (Player)_playerField.GetValue(firearmController);
             if (player != null && player.IsYourPlayer && firearmController.Weapon != null)
             {
-                bool realismIsNull = Plugin.RealCompat == null || !Plugin.RealCompat.StancesAreEnabled || !Plugin.RealismIsPresent;
-                bool smoothPatrolStanceADS = !realismIsNull && Plugin.RealCompat.DoPatrolStanceAdsSmoothing;
-                bool isColliding = !realismIsNull && Plugin.RealCompat.StopCameraMovmentForCollision;
-                bool isMachinePistol = (!realismIsNull && Plugin.RealCompat.IsMachinePistol);
-                bool isPistol = isMachinePistol || Plugin.FovController.IsPistol;
+                //bool realismIsNull = false; //Plugin.RealCompat == null || !Plugin.RealCompat.StancesAreEnabled || !Plugin.RealismIsPresent;
+                bool smoothPatrolStanceADS = false; //!realismIsNull && Plugin.RealCompat.DoPatrolStanceAdsSmoothing;
+                bool isColliding = false; //!realismIsNull && Plugin.RealCompat.StopCameraMovmentForCollision;
+                bool isMachinePistol = false; //(!realismIsNull && Plugin.RealCompat.IsMachinePistol);
+                bool isPistol = Plugin.FovController.IsPistol;
                 bool isOptic = __instance.CurrentScope.IsOptic;
-                float collsionCameraSpeed = !realismIsNull ? Plugin.RealCompat.CameraMovmentForCollisionSpeed : 1f;
+                float collsionCameraSpeed = 1f; //!realismIsNull ? Plugin.RealCompat.CameraMovmentForCollisionSpeed : 1f;
 
                 _collsionCameraSpeed = isColliding ? 0f : Mathf.Lerp(_collsionCameraSpeed, 1f, collsionCameraSpeed);
-                if (!realismIsNull) DoStanceSmoothing();
+                //if (!realismIsNull) DoStanceSmoothing();
 
                 float headBob = Singleton<SharedGameSettingsClass>.Instance.Game.Settings.HeadBobbing;
                 Vector3 localPosition = __instance.HandsContainer.CameraTransform.localPosition;
@@ -351,15 +354,17 @@ namespace FOVFix
                     }
                 }
 
-                if (!realismIsNull && isPistol && Plugin.RealCompat.RealismAltPistol && !Plugin.RealCompat.HasShoulderContact) _yPos = Mathf.Max(newLocalPosition.y, 0.035f);
+                //if (!realismIsNull && isPistol && Plugin.RealCompat.RealismAltPistol && !Plugin.RealCompat.HasShoulderContact) _yPos = Mathf.Max(newLocalPosition.y, 0.035f);
+                /*
                 else if (!realismIsNull && Plugin.RealCompat.RealismAltRifle)
                 {
                     float limit = newLocalPosition.y < 0f && __instance.IsAiming ? camY * 1f : Mathf.Max(newLocalPosition.y, -0.015f); //forgot to insert a value in place of 1...
                     float target = Mathf.Max(newLocalPosition.y, -0.015f); //!__instance.IsAiming ? Mathf.Max(newLocalPosition.y, -0.015f) : 
                     _yPos = target;
                 }
-                else _yPos = newLocalPosition.y;
-
+                */
+                //else
+                _yPos = newLocalPosition.y;
                 __instance.HandsContainer.CameraTransform.localPosition = new Vector3(newLocalPosition.x, _yPos, newLocalPosition.z);
                 Quaternion animatedRotation = __instance.HandsContainer.CameraAnimatedFP.localRotation * __instance.HandsContainer.CameraAnimatedTP.localRotation;
                 __instance.HandsContainer.CameraTransform.localRotation = Quaternion.Lerp(____cameraIdenity, animatedRotation, headBob * (1f - ____tacticalReload.Value)) * Quaternion.Euler(__instance.HandsContainer.CameraRotation.Get() + ____headRotationVec) * ____rotationOffset;

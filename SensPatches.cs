@@ -1,7 +1,7 @@
 ﻿using Comfort.Common;
 using EFT;
 using EFT.InventoryLogic;
-using RealismMod;
+//using RealismMod;
 using SPT.Reflection.Patching;
 using System.Reflection;
 using UnityEngine;

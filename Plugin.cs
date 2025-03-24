@@ -91,7 +91,7 @@ namespace FOVFix
         public static ConfigEntry<float> HudFOV { get; set; }
 
         public static FovController FovController { get; set; }
-        public static RealismCompat RealCompat { get; set; } 
+        //public static RealismCompat RealCompat { get; set; } 
 
         private void Awake()
         {
@@ -175,8 +175,8 @@ namespace FOVFix
             new PwaWeaponParamsPatch().Enable();
             new FreeLookPatch().Enable();
             new LerpCameraPatch().Enable();
-            new FovRangePatch().Enable();
-            new FovValuePatch().Enable();
+            //new FovRangePatch().Enable();
+            //new FovValuePatch().Enable();
             new AimingSensitivityPatch().Enable();
             new ScopeSensitivityPatch().Enable();
             new CloneItemPatch().Enable();
@@ -184,6 +184,7 @@ namespace FOVFix
 
         }
 
+        /*
         private void CheckForMods()
         {
             if (!_detectedMods && (int)Time.time % 5 == 0)
@@ -197,11 +198,12 @@ namespace FOVFix
                 }
             }
         }
+        */
 
         void Update()
         {
-            if (RealismIsPresent) Plugin.RealCompat.Update();
-            CheckForMods();
+           // if (RealismIsPresent) Plugin.RealCompat.Update();
+           // CheckForMods();
             FovController.ControllerUpdate();
         }
     }
